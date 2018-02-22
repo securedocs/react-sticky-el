@@ -5,7 +5,8 @@ if (typeof document !== 'undefined') {
   basicSelectors.document = document;
 }
 
-var matchesMethodName = (() => {
+var matchesMethodName = null;
+var _matchesMethodName = () => {
   if (typeof document !== 'undefined') {
     const body = document.body;
     return typeof(body.matches) === 'function' ? 'matches' :
@@ -15,7 +16,7 @@ var matchesMethodName = (() => {
       typeof(body.oMatchesSelector) === 'function' ? 'oMatchesSelector': //old opera
       null
   }
-})();
+}
 
 export default function find(selector, el) {
   if (!selector) {
@@ -29,6 +30,10 @@ export default function find(selector, el) {
   // select by id
   if (selector[0] === '#') {
     return document.getElementById(selector.slice(1));
+  }
+
+  if (!matchesMethodName) {
+    matchesMethodName = _matchesMethodName();
   }
 
   if (!matchesMethodName) {
